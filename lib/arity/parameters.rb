@@ -21,5 +21,10 @@ module Arity
       function.callable?(arg_count: args.size, keywords: opts.keys)
     end
 
+    def send_to(function)
+      argsopts = opts.empty? ? args : args.dup.push(opts)
+      function.callable.call(*argsopts)
+    end
+
   end
 end
