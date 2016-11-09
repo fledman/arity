@@ -59,8 +59,10 @@ module Arity
     end
 
     def unknown_parameter_type!(type, name)
-      raise UnknownParameterTypeError,
-        "type #{type.inspect} for parameter #{name.inspect}"
+      msg  = "do not known how to parse the function signature"
+      msg += " for type #{type.inspect} with parameter #{name.inspect}"
+      msg += "; please file an issue at https://www.github.com/fledman/arity"
+      raise UnknownParameterTypeError, msg
     end
 
     def bad_param(name, type, value)
