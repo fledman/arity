@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe Arity::Function do
 
+  class Pair; def call(a,b); [a,b]; end; end
+
+  def n_tuple(*many); many; end
+
   context 'instantiation' do
     it 'cannot be created using .new' do
       expect{
@@ -36,8 +40,7 @@ describe Arity::Function do
     end
 
     it 'unwraps callable objects' do
-      klass = Class.new(Object){ def call(a,b); [a,b]; end }
-      receiver = klass.new
+      receiver = Pair.new
       function = described_class.make(receiver)
       expect(function.callable).to eql receiver.method(:call)
     end
@@ -45,9 +48,22 @@ describe Arity::Function do
 
   describe '.arity' do
     it 'delegates to the .callable' do
-      fn = described_class.make(->(){})
-      expect(fn.callable).to receive(:arity)
-      fn.arity
+      dbl = double(call: true)
+      expect(dbl).to receive(:arity).and_return(9001)
+      fn = described_class.make(dbl)
+      expect(fn.arity).to eql 9001
+    end
+
+    it 'is correct for unwrapped callables' do
+      expect(described_class.make(Pair.new).arity).to eql 2
+    end
+
+    it 'is correct for method objects' do
+      expect(described_class.make(method(:n_tuple)).arity).to eql(-1)
+    end
+
+    it 'is correct for procs' do
+      expect(described_class.make(->(){}).arity).to eql(0)
     end
   end
 
