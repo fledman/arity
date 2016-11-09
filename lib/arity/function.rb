@@ -1,6 +1,9 @@
 module Arity
   class Function
+
     attr_reader :callable
+
+    private_class_method :new
 
     def self.make(fn, silent: false)
       return new(fn) if fn.respond_to?(:call)
@@ -8,7 +11,7 @@ module Arity
       raise NotCallableError, "function is not callable: #{fn.inspect}"
     end
 
-    private def initialize(fn)
+    def initialize(fn)
       @callable = unwrap_function(fn)
     end
 
