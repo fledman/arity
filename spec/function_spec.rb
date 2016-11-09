@@ -28,10 +28,27 @@ describe Arity::Function do
       function = described_class.make(closure)
       expect(function.callable).to equal closure
     end
+
+    it 'properly handles Method objects' do
+      method = method(:puts)
+      function = described_class.make(method)
+      expect(function.callable).to equal method
+    end
+
+    it 'unwraps callable objects' do
+      klass = Class.new(Object){ def call(a,b); [a,b]; end }
+      receiver = klass.new
+      function = described_class.make(receiver)
+      expect(function.callable).to eql receiver.method(:call)
+    end
   end
 
   describe '.arity' do
-    #
+    it 'delegates to the .callable' do
+      fn = described_class.make(->(){})
+      expect(fn.callable).to receive(:arity)
+      fn.arity
+    end
   end
 
   describe '.signature' do
