@@ -1,5 +1,6 @@
 module Arity
   class Function
+    attr_reader :callable
 
     def self.make(fn, silent: false)
       return new(fn) if fn.respond_to?(:call)
@@ -7,9 +8,7 @@ module Arity
       raise NotCallableError, "function is not callable: #{fn.inspect}"
     end
 
-    attr_reader :callable
-
-    def initialize(fn)
+    private def initialize(fn)
       @callable = unwrap_function(fn)
     end
 
@@ -21,7 +20,7 @@ module Arity
       @signature ||= compute_signature
     end
 
-    def callable?(arg_count:, keywords:)
+    def takes?(arg_count:, keywords:)
       bad_param('arg_count', 'an int', arg_count) if !arg_count.is_a?(Integer)
       bad_param('keywords', 'an array', keywords) if !keywords.is_a?(Array)
 
@@ -39,6 +38,15 @@ module Arity
       extra_keys = keywords - signature[:required_keys] \
                             - signature[:optional_keys]
       extra_keys.empty?
+    end
+
+    def runnable?(*args, **opts)
+      takes?(arg_count: args.size, keywords: opts.keys)
+    end
+
+    def run(*args, **opts)
+      args.push(opts) unless opts.empty?
+      callable.call(*args)
     end
 
     private

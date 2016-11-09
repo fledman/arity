@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["dbfeldman@gmail.com"]
 
   spec.summary       = "logic regarding function arity"
-  spec.description   = "determine if ruby functions can be called for a given argument count"
+  spec.description   = "determine if ruby functions can be called given specific parameters"
   spec.homepage      = "https://github.com/fledman/arity"
   spec.license       = "MIT"
 
