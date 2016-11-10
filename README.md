@@ -1,39 +1,40 @@
 # Arity
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/arity`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Logic to determine when Ruby functions can be called.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'arity'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install arity
+Add `gem 'arity'` to your Gemfile.
 
 ## Usage
-
-TODO: Write usage instructions here
+```ruby
+function = Arity::Function.make(some_callable)
+```
+Here, `some_callable` should respond to `:call` ; otherwise, `.make` will raise an `Arity::NotCallableError`. If preferred, you can pass `silent: true` to `.make` and on failure it will return `nil` instead.
+```ruby
+function.arity
+```
+`.arity` merely delegates to Ruby's built-in arity logic.
+```ruby
+function.takes?(arg_count: 3, keywords: [:things])
+```
+`.takes?` determines if the supplied method parameter counts are valid.
+```ruby
+function.runnable?('thing-1','thing-2','thing-3', things: 3)
+```
+`.runnable?` simply counts the given parameters and delegates to `.takes?`
+```ruby
+function.run('thing-1','thing-2','thing-3', things: 3)
+```
+`.run` calls `.call` on the callable with the supplied parameters.
 
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/arity.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/fledman/arity.
 
 ## License
 
