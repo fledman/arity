@@ -9,24 +9,27 @@ Add `gem 'arity'` to your Gemfile.
 ## Usage
 ```ruby
 function = Arity::Function.make(some_callable)
+# note the use of .make versus .new
+# some_callable should respond to :call
+# otherwise, .make will raise an Arity::NotCallableError
+# to avoid raising, pass {silent: true} to .make and it will return nil instead
 ```
-Here, `some_callable` should respond to `:call` ; otherwise, `.make` will raise an `Arity::NotCallableError`. If preferred, you can pass `silent: true` to `.make` and on failure it will return `nil` instead.
 ```ruby
 function.arity
+# delegates to Ruby's built-in arity logic
 ```
-`.arity` merely delegates to Ruby's built-in arity logic.
 ```ruby
 function.takes?(arg_count: 3, keywords: [:things])
+# determines if the supplied method parameter structure is valid.
 ```
-`.takes?` determines if the supplied method parameter counts are valid.
 ```ruby
 function.runnable?('thing-1','thing-2','thing-3', things: 3)
+# computes the parameter structure and delegates to .takes?
 ```
-`.runnable?` simply counts the given parameters and delegates to `.takes?`
 ```ruby
 function.run('thing-1','thing-2','thing-3', things: 3)
+# calls .call on the callable with the supplied parameters
 ```
-`.run` calls `.call` on the callable with the supplied parameters.
 
 ## Development
 
